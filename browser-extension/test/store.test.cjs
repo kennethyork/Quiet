@@ -264,6 +264,32 @@ test('a dry run needs no credentials and prints a plan for every store', () => {
 // The package itself is fit to upload
 // ---------------------------------------------------------------------------------------------
 
+/**
+ * The off-store instructions are the ones people follow with no store to correct them, so the JSON
+ * they paste into a policy file has to parse, and the file names they are told to look for have to be
+ * the ones the build and the signing script actually produce.
+ */
+test('the off-store instructions are valid and match the files that exist', async () => {
+  const doc = await fsp.readFile(path.join(extensionRoot, 'docs', 'installing-without-a-store.md'), 'utf8');
+  const readme = await fsp.readFile(path.join(extensionRoot, 'README.md'), 'utf8');
+  assert.match(readme, /docs\/installing-without-a-store\.md/, 'the extension README should link the off-store instructions');
+
+  const blocks = [...doc.matchAll(/```json\n([\s\S]*?)```/g)].map((match) => match[1]);
+  assert.ok(blocks.length >= 2, 'expected the policy snippets for Firefox and Chromium');
+  for (const block of blocks) {
+    const parsed = JSON.parse(block);
+    assert.ok(parsed.policies || parsed.ExtensionSettings, 'each snippet should be a policy document');
+  }
+
+  // The Firefox snippet names our real add-on id, which the build defines once.
+  const { FIREFOX_ADDON_ID } = await loadBuildHelpers();
+  assert.ok(doc.includes(FIREFOX_ADDON_ID), `the Firefox policy snippet should use the add-on id ${FIREFOX_ADDON_ID}`);
+
+  const publisher = await fsp.readFile(path.join(extensionRoot, 'scripts', 'publish-store.mjs'), 'utf8');
+  assert.match(publisher, /-signed\.xpi/, 'the doc promises a -signed.xpi, so the script must write one');
+  assert.match(doc, /<version>-signed\.xpi/, 'the doc should not hardcode a version in the signed file name');
+});
+
 test('a built package carries nothing it should not', async (t) => {
   const candidates = (await fsp.readdir(path.join(extensionRoot, 'dist')).catch(() => [])).filter((name) => /^quiet-chromium-.*\.zip$/.test(name));
   if (candidates.length === 0) {

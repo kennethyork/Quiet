@@ -177,7 +177,8 @@
               </ol>
               <p class="tiny muted">
                 Firefox treats an unsigned add-on as temporary: it is forgotten when Firefox restarts.
-                A build signed through addons.mozilla.org would install for good.
+                The download here is signed, so it installs for good - signing does not need a public
+                listing, and it is free.
               </p>
               <a class="button wide" data-download="firefox" href="https://github.com/kennethyork/Quiet/releases/latest">
                 Download for Firefox <span class="ver" data-version></span>
@@ -205,6 +206,13 @@
           </div>
 
           <p class="release-note" data-missing-note hidden></p>
+
+          <p class="release-note">
+            No store is needed: the extension loads unpacked, the Firefox file is signed for
+            self-distribution, and a managed machine can force-install either. The three routes and
+            what each costs are in
+            <a href="https://github.com/kennethyork/Quiet/blob/main/browser-extension/docs/installing-without-a-store.md">installing without a store</a>.
+          </p>
 
           <figure class="shot">
             <img

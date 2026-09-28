@@ -30,7 +30,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { packageName } from './build.mjs';
+import { FIREFOX_ADDON_ID, packageName } from './build.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const extensionRoot = path.resolve(here, '..');
@@ -230,7 +230,7 @@ async function publishFirefox({ dryRun, channel, log }) {
   log('    validated');
 
   // 3. Attach the upload to the add-on, creating it if this is the first release.
-  const addonId = 'browser-extension@quiet.app';
+  const addonId = FIREFOX_ADDON_ID;
   let version;
   try {
     version = await amoFetch(

@@ -74,6 +74,13 @@ async function readAppIdentity() {
   };
 }
 
+/**
+ * The Firefox add-on ID. It appears in the Firefox manifest, in the policy snippets people paste into
+ * a managed browser, and in the publishing script, so it lives here rather than in three strings that
+ * can drift apart.
+ */
+export const FIREFOX_ADDON_ID = 'browser-extension@quiet.app';
+
 export function packageName(identity, target) {
   const extension = target === 'firefox' ? 'xpi' : 'zip';
   return `${identity.name.toLowerCase()}-${target}-${identity.version}.${extension}`;
@@ -116,7 +123,7 @@ function manifestFor(target, identity, rulesetIds) {
     };
     manifest.browser_specific_settings = {
       gecko: {
-        id: 'browser-extension@quiet.app',
+        id: FIREFOX_ADDON_ID,
         strict_min_version: '115.0',
       },
     };

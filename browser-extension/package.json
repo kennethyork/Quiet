@@ -18,6 +18,7 @@
     "smoke": "node scripts/smoke.mjs",
     "store:assets": "node scripts/make-store-assets.mjs",
     "store:publish": "node scripts/publish-store.mjs",
+    "sign:firefox": "node scripts/publish-store.mjs --store=firefox --channel=unlisted",
     "verify": "npm test && npm run build && npm run smoke"
   }
 }

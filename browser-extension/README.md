@@ -25,6 +25,11 @@ npm run build          # everything below, plus zip/xpi artefacts in dist/
 `expo.version` in the app's `app.json`, and so does the name, so the two products cannot drift apart
 in name or number.
 
+**No store is required to run any of this.** [docs/installing-without-a-store.md](docs/installing-without-a-store.md)
+has the three routes - loading it yourself, signing the Firefox build without listing it (free, and
+what turns the `.xpi` into a permanent install), and force-installing by policy on a machine you
+manage - with what each one costs.
+
 ## What it does
 
 - **Blocks by domain.** Every request the browser makes is checked against the lists. The rules use
