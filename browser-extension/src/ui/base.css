@@ -1,0 +1,313 @@
+/*
+ * Shared chrome for the popup and the options page.
+ *
+ * The palette is the app's (`src/theme.ts`), so the extension looks like the thing it came from
+ * rather than like a browser add-on bolted on afterwards.
+ */
+:root {
+  --bg: #070b14;
+  --card: #0f172a;
+  --card-alt: #111c33;
+  --border: #1e293b;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --faint: #64748b;
+  --accent: #6366f1;
+  --accent-dark: #4338ca;
+  --accent-soft: rgba(99, 102, 241, 0.16);
+  --success: #22c55e;
+  --success-soft: rgba(34, 197, 94, 0.14);
+  --danger: #f43f5e;
+  --danger-soft: rgba(244, 63, 94, 0.14);
+  --warn: #f59e0b;
+  --warn-soft: rgba(245, 158, 11, 0.14);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 15px;
+}
+
+a {
+  color: var(--accent);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.faint {
+  color: var(--faint);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.card + .card {
+  margin-top: 12px;
+}
+
+.section-title {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 18px 0 8px;
+  text-transform: uppercase;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.row-start {
+  align-items: flex-start;
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.wrap {
+  overflow-wrap: anywhere;
+}
+
+button {
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  padding: 9px 14px;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+button:hover:not(:disabled) {
+  background: #16233d;
+  border-color: #2b3a55;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+button.danger {
+  background: var(--danger-soft);
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #fda4af;
+}
+
+button.ghost {
+  background: transparent;
+}
+
+button.wide {
+  width: 100%;
+}
+
+input[type='text'],
+input[type='password'],
+input[type='number'],
+select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font: inherit;
+  padding: 9px 11px;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pill {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 600;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  padding: 4px 10px;
+}
+
+.pill.on {
+  background: var(--success-soft);
+  color: #86efac;
+}
+
+.pill.off {
+  background: var(--danger-soft);
+  color: #fda4af;
+}
+
+.pill.warn {
+  background: var(--warn-soft);
+  color: #fcd34d;
+}
+
+.pill.info {
+  background: var(--accent-soft);
+  color: #c7d2fe;
+}
+
+.dot {
+  background: currentColor;
+  border-radius: 50%;
+  height: 6px;
+  width: 6px;
+}
+
+.stat {
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  flex: 1;
+  padding: 10px 12px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.stat-label {
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.banner {
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  padding: 10px 12px;
+}
+
+.banner.warn {
+  background: var(--warn-soft);
+  color: #fde68a;
+}
+
+.banner.danger {
+  background: var(--danger-soft);
+  color: #fecdd3;
+}
+
+.banner.info {
+  background: var(--accent-soft);
+  color: #c7d2fe;
+}
+
+.switch {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 10px;
+  user-select: none;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--accent);
+  height: 16px;
+  width: 16px;
+}
+
+.list-item + .list-item {
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.tiny {
+  font-size: 12px;
+}
+
+.modal {
+  align-items: center;
+  background: rgba(3, 6, 15, 0.78);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 16px;
+  position: fixed;
+  z-index: 50;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  max-width: 340px;
+  padding: 16px;
+  width: 100%;
+}
+
+.error-text {
+  color: #fda4af;
+  font-size: 12.5px;
+  min-height: 16px;
+}

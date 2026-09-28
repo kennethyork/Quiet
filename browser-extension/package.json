@@ -1,0 +1,21 @@
+{
+  "name": "quiet-browser-extension",
+  "private": true,
+  "version": "0.0.0",
+  "//": "npm needs a version field; the version that ships is expo.version from the app's app.json, injected into each manifest by scripts/build.mjs.",
+  "description": "Quiet's domain filtering as a browser extension for Chrome, Edge, Brave, Opera, Firefox and Safari.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:chromium": "node scripts/build.mjs --targets=chromium",
+    "build:firefox": "node scripts/build.mjs --targets=firefox",
+    "build:safari": "node scripts/build.mjs --targets=safari",
+    "build:with-optional-lists": "node scripts/build.mjs --fetch-optional",
+    "test": "node --test test",
+    "smoke": "node scripts/smoke.mjs",
+    "verify": "npm test && npm run build && npm run smoke"
+  }
+}

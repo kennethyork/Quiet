@@ -1,0 +1,51 @@
+body {
+  padding: 28px 18px 48px;
+}
+
+.page {
+  margin: 0 auto;
+  max-width: 620px;
+}
+
+.hero {
+  margin-bottom: 6px;
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.brand h1 {
+  font-size: 20px;
+}
+
+.wrap-row {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.wrap-row > * {
+  flex: 1 1 140px;
+}
+
+.wrap-row button {
+  flex: 0 0 auto;
+}
+
+input[type='password'] {
+  letter-spacing: 0.2em;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+}
+
+code {
+  background: var(--card-alt);
+  border-radius: 4px;
+  padding: 1px 5px;
+}

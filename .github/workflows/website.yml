@@ -1,0 +1,51 @@
+name: Website
+
+# Publishes website/ to GitHub Pages on every push to main. The site is plain HTML, one stylesheet
+# and two small scripts, so there is nothing to build - only things to check.
+on:
+  push:
+    branches: [main]
+    paths: ['website/**', '.github/workflows/website.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Fails if a local reference is missing, a download name no longer matches what the builds
+      # produce, a link is not HTTPS, a tracker crept in, or a number on the page is no longer true.
+      - name: Check the site against the repository
+        run: node website/check.mjs
+
+      # `enablement: true` turns GitHub Pages on with the "GitHub Actions" source if it is not
+      # already configured, so the first push publishes the site instead of failing on setup.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4

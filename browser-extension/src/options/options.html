@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Settings</title>
+    <link rel="stylesheet" href="../ui/base.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="row hero">
+        <div class="brand">
+          <img src="../icons/icon48.png" alt="" width="34" height="34" />
+          <div>
+            <h1 data-app-name></h1>
+            <p class="muted tiny" style="margin: 0">A filter for this browser, from the app of the same name.</p>
+          </div>
+        </div>
+        <span id="status-pill" class="pill off"><span class="dot"></span><span id="status-text">Off</span></span>
+      </header>
+
+      <div id="banner" class="banner warn" hidden></div>
+
+      <section id="setup-section">
+        <p class="section-title">First run</p>
+        <div class="card stack">
+          <h2>Choose a PIN</h2>
+          <p class="muted tiny" style="margin: 0">
+            The PIN is mandatory: protection refuses to start without one, and it is asked for every time
+            something would weaken it. It cannot be recovered - clearing this extension's data is the only
+            reset. It is not a lock on the browser, which can still disable the extension: it is a speed bump
+            for the moment you want to switch it off.
+          </p>
+          <div class="row">
+            <input id="pin-new" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4-8 digits" />
+            <input id="pin-confirm" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="Repeat" />
+          </div>
+          <button id="pin-create" class="primary">Set the PIN and arm <span data-app-name></span></button>
+          <p id="pin-create-error" class="error-text"></p>
+        </div>
+      </section>
+
+      <section id="protection-section" hidden>
+        <p class="section-title">Protection</p>
+        <div class="card stack">
+          <div class="row">
+            <div class="grow">
+              <h2>Shield</h2>
+              <p id="protection-note" class="muted tiny" style="margin: 0"></p>
+            </div>
+            <button id="shield-toggle">Toggle</button>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <h2>Commitment lock</h2>
+              <p id="commitment-note" class="muted tiny" style="margin: 0">
+                Refuses to switch protection off until the timer runs out, whatever you tell yourself now.
+              </p>
+            </div>
+          </div>
+          <div class="row wrap-row">
+            <select id="commitment-hours">
+              <option value="1">1 hour</option>
+              <option value="6">6 hours</option>
+              <option value="24">24 hours</option>
+              <option value="72">3 days</option>
+              <option value="168">7 days</option>
+            </select>
+            <button id="commitment-start">Start the lock</button>
+            <button id="commitment-release" class="ghost">Release it</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="lists-section" hidden>
+        <p class="section-title">Lists</p>
+        <div class="card" id="lists"></div>
+      </section>
+
+      <section id="allowlist-section" hidden>
+        <p class="section-title">Allowlist</p>
+        <div class="card stack">
+          <p class="muted tiny" style="margin: 0">
+            A list is sometimes too aggressive. Anything here wins over every list, and covers sub-domains:
+            allowing <code>example.com</code> also allows <code>cdn.example.com</code>.
+          </p>
+          <div class="row">
+            <input id="allow-input" type="text" placeholder="example.com" />
+            <button id="allow-add">Allow</button>
+          </div>
+          <div id="allow-items"></div>
+        </div>
+      </section>
+
+      <section id="stats-section" hidden>
+        <p class="section-title">Statistics</p>
+        <div class="card stack">
+          <div class="row">
+            <div class="stat">
+              <div id="stat-today" class="stat-value">0</div>
+              <div class="stat-label">Stopped today</div>
+            </div>
+            <div class="stat">
+              <div id="stat-total" class="stat-value">0</div>
+              <div class="stat-label">Since install</div>
+            </div>
+          </div>
+          <div id="history"></div>
+          <p id="stats-note" class="muted tiny" style="margin: 0"></p>
+          <button id="stats-clear" class="danger">Clear the statistics</button>
+        </div>
+      </section>
+
+      <section id="pin-section" hidden>
+        <p class="section-title">PIN &amp; commitment</p>
+        <div class="card stack">
+          <div class="row wrap-row">
+            <input id="pin-current" type="password" inputmode="numeric" maxlength="8" placeholder="Current PIN" />
+            <input id="pin-next" type="password" inputmode="numeric" maxlength="8" placeholder="New PIN" />
+            <button id="pin-change">Change the PIN</button>
+          </div>
+          <p class="muted tiny" style="margin: 0">
+            Removing the PIN switches protection off and releases the commitment lock, because filtering
+            with no PIN behind it is filtering you can talk yourself out of. The setup screen comes back
+            until a new PIN exists.
+          </p>
+          <button id="pin-remove" class="danger">Remove the PIN</button>
+          <p id="pin-error" class="error-text"></p>
+        </div>
+      </section>
+
+      <section id="about-section">
+        <p class="section-title">About</p>
+        <div class="card stack">
+          <div id="about-lines" class="stack tiny"></div>
+          <p class="muted tiny" style="margin: 0">
+            What this extension cannot do: it only sees this browser. Other browsers, apps, and anything on your
+            phone are out of its reach, and it cannot put a family resolver behind your back the way the Android
+            app can. On Android, the app is the real thing; here it is the same lists in front of one browser.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="../common/domains.js"></script>
+    <script src="../common/lists.js"></script>
+    <script src="../common/ui.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

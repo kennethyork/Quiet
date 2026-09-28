@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Popup</title>
+    <link rel="stylesheet" href="../ui/base.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header class="row">
+        <div class="brand">
+          <img src="../icons/icon32.png" alt="" width="22" height="22" />
+          <h1 id="app-name"></h1>
+        </div>
+        <span id="status-pill" class="pill off"><span class="dot"></span><span id="status-text">Off</span></span>
+      </header>
+
+      <div id="banner" class="banner warn" hidden></div>
+
+      <section class="card stack">
+        <p id="shield-summary" class="muted tiny">Loading…</p>
+        <button id="toggle" class="primary wide">Turn protection on</button>
+      </section>
+
+      <p class="section-title">This page</p>
+      <section class="card stack">
+        <div class="row row-start">
+          <div class="grow">
+            <div id="site-host" class="wrap">No site here</div>
+            <div id="site-note" class="tiny faint"></div>
+          </div>
+          <div class="site-count">
+            <div id="site-count" class="stat-value">0</div>
+            <div class="stat-label">blocked</div>
+          </div>
+        </div>
+        <button id="allow-site" class="wide">Allow this site</button>
+      </section>
+
+      <section class="row stats-row">
+        <div class="stat">
+          <div id="today" class="stat-value">0</div>
+          <div class="stat-label">Stopped today</div>
+        </div>
+        <div class="stat">
+          <div id="total" class="stat-value">0</div>
+          <div class="stat-label">Since install</div>
+        </div>
+      </section>
+
+      <button id="open-options" class="ghost wide">Lists, allowlist, PIN and statistics</button>
+      <p id="footnote" class="tiny faint"></p>
+    </main>
+    <script src="../common/domains.js"></script>
+    <script src="../common/ui.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+body {
+  width: 348px;
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.brand h1 {
+  font-size: 16px;
+}
+
+.section-title {
+  margin: 0;
+}
+
+.site-count {
+  text-align: right;
+}
+
+.stats-row {
+  gap: 10px;
+}
+
+input[type='password'] {
+  letter-spacing: 0.35em;
+  text-align: center;
+}

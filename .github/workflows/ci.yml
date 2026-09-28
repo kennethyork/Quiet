@@ -47,6 +47,57 @@ jobs:
       - name: Unit tests
         run: cd android && ./gradlew :quiet-vpn:testDebugUnitTest
 
+      # The site is hand-written, so it is checked against the repository it describes: links,
+      # download names, and the numbers it claims.
+      - name: Website checks
+        run: node website/check.mjs
+
+  # Builds the browser extension for every browser and attaches the packages to the run, so a
+  # testable build needs nothing but a push - the same deal the APK job offers.
+  extension:
+    needs: verify
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.collect.outputs.version }}
+      label: ${{ steps.collect.outputs.label }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # No `npm install`: the extension is deliberately dependency-free.
+      - name: Unit tests
+        run: cd browser-extension && npm test
+
+      - name: Build every target
+        run: cd browser-extension && npm run build
+
+      # Loads the build in whatever browser the runner has. It reports itself skipped when that
+      # browser cannot run unpacked extensions, rather than failing the build for the wrong reason.
+      - name: Smoke test
+        run: cd browser-extension && npm run smoke
+
+      - name: Collect the packages
+        id: collect
+        run: |
+          version=$(node -p "require('./app.json').expo.version")
+          label=$(node -p "require('./app.json').expo.name")
+          mkdir -p dist
+          cp browser-extension/dist/*.zip browser-extension/dist/*.xpi dist/
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "label=$label" >> "$GITHUB_OUTPUT"
+          ls -lh dist
+
+      - name: Upload the extension packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.collect.outputs.label }}-${{ steps.collect.outputs.version }}-browser-extension
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 90
+
   # Builds the APK you install on a phone, and publishes it as a workflow artifact.
   apk:
     needs: verify
@@ -143,7 +194,7 @@ jobs:
 
   # Pushing a tag like v1.0.0 builds the APK above and publishes it as a release.
   release:
-    needs: apk
+    needs: [apk, extension]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -152,6 +203,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.apk.outputs.label }}-${{ needs.apk.outputs.version }}
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.extension.outputs.label }}-${{ needs.extension.outputs.version }}-browser-extension
           path: dist
 
       - name: Publish the release
@@ -183,8 +239,21 @@ jobs:
 
           `docs/ARCHITECTURE.md` has the detail, and `docs/UNINSTALL-PROTECTION.md` explains what
           Android does and does not allow an app to protect itself from.
+
+          ### Website
+
+          One page for both halves, with the download buttons:
+          <https://kennethyork.github.io/Quiet/>
+
+          ### Browser extension
+
+          The same blocklists for Chrome, Edge, Brave, Opera, Vivaldi, Firefox and Safari. Install
+          `quiet-chromium-<version>.zip` from `chrome://extensions` (Developer mode, then Load
+          unpacked after unzipping), or `quiet-firefox-<version>.xpi` from
+          `about:debugging#/runtime/this-firefox`. Safari needs Xcode: see
+          `browser-extension/README.md`.
           NOTES
-          gh release create "${GITHUB_REF_NAME}" dist/*.apk \
+          gh release create "${GITHUB_REF_NAME}" dist/*.apk dist/*.zip dist/*.xpi \
             --repo "${GITHUB_REPOSITORY}" \
             --title "${{ needs.apk.outputs.label }} ${GITHUB_REF_NAME#v}" \
             --notes-file NOTES.md

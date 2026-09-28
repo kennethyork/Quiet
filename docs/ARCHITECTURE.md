@@ -119,6 +119,32 @@ native tunnel applies them. That keeps the fast path free of bridge traffic.
 | `Store.kt` | Settings, daily counters, PIN hash, commitment |
 | `QuietVpnModule.kt` | The JavaScript API, PIN enforcement, device owner actions |
 
+## The browser extension
+
+`browser-extension/` is the same lists in front of a browser, and the same shape of decision: the
+browser's own `declarativeNetRequest` engine matches, the extension only supplies rules.
+
+| App | Extension |
+| --- | --- |
+| `DomainRules.kt` suffix matcher, ported to `src/common/domains.js` | `condition.requestDomains`, chunked 1,000 domains per rule |
+| Allowlist consulted first, wins | dynamic `allow` rules at a higher priority than the block rules |
+| Bundled lists in `assets/blocklists/` | the same files turned into rulesets by `scripts/build.mjs` |
+| PIN enforced in Kotlin before anything is weakened | PIN enforced in the background worker, PBKDF2 instead of salted SHA-256 |
+| Every app on the phone | Only the browser it is installed in |
+| Allowed lookups relayed to a family resolver | No relay is possible: the lists do all the work |
+| Per-day counters from the DNS path | Counters from blocked top-level loads, which is what browsers report |
+
+There is no runtime network traffic in the extension at all, and the optional OISD lists are baked in
+at build time rather than fetched: a blocker that downloads its own rules is a blocker with a
+network dependency it can be talked out of.
+
+The one thing the extension cannot do is see past its own browser, which is why the app remains the
+real product and the extension is described as the same lists in one browser. See
+[browser-extension/README.md](../browser-extension/README.md).
+
+The landing page in `website/` presents both halves on one page and hands out the APK and the
+packages from the latest release; it is checked against this repository by `website/check.mjs`.
+
 ## Names and identifiers
 
 The app is called Quiet everywhere a user can see it, and the identifiers match:
