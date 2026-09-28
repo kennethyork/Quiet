@@ -55,7 +55,7 @@ Firefox, with the signed XPI hosted wherever you like (any HTTPS URL, or a `file
     "ExtensionSettings": {
       "browser-extension@quiet.app": {
         "installation_mode": "force_installed",
-        "install_url": "https://example.com/quiet-firefox-1.0.7-signed.xpi"
+        "install_url": "https://example.com/quiet-firefox-<version>-signed.xpi"
       }
     }
   }
@@ -95,8 +95,8 @@ into a normal profile, so "pack it and drag it in" is not a route that works for
 ## Verifying what you downloaded
 
 ```sh
-sha256sum quiet-firefox-1.0.7.xpi        # compare with the digest on the release page
-unzip -p quiet-chromium-1.0.7.zip manifest.json | head -20
+sha256sum quiet-firefox-<version>.xpi        # compare with the digest on the release page
+unzip -p quiet-chromium-<version>.zip manifest.json | head -20
 ```
 
 The manifests and rulesets in those files are the ones this repository builds: `npm test` regenerates

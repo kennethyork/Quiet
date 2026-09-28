@@ -164,6 +164,17 @@ check(
   hardcodedAsset ? hardcodedAsset[0] : 'names come from the release API',
 );
 
+// No published page names a version at all, for the same reason: the site is not rebuilt per
+// release. The pattern ignores anything with a fourth part, so an address like 0.0.0.0 - which the
+// page mentions as an answer mode - is not mistaken for a version.
+const versionPattern = /(?<![\d.])\d+\.\d+\.\d+(?![\d.])/;
+const versionedPage = [...pages.entries()].find(([, source]) => versionPattern.test(source));
+check(
+  'no page hardcodes a version number',
+  !versionedPage,
+  versionedPage ? versionedPage[0] : `${PAGES.join(', ')} stay true across releases`,
+);
+
 // -----------------------------------------------------------------------------------------------
 // The buttons really do hand out the app and the extensions
 // -----------------------------------------------------------------------------------------------

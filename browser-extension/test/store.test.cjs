@@ -288,6 +288,10 @@ test('the off-store instructions are valid and match the files that exist', asyn
   const publisher = await fsp.readFile(path.join(extensionRoot, 'scripts', 'publish-store.mjs'), 'utf8');
   assert.match(publisher, /-signed\.xpi/, 'the doc promises a -signed.xpi, so the script must write one');
   assert.match(doc, /<version>-signed\.xpi/, 'the doc should not hardcode a version in the signed file name');
+
+  // Every release would otherwise leave these examples pointing at a version that no longer exists.
+  const stale = doc.match(/(?<![\d.])\d+\.\d+\.\d+(?![\d.])/);
+  assert.equal(stale, null, `the off-store doc hardcodes a version (${stale && stale[0]}); use <version>`);
 });
 
 test('a built package carries nothing it should not', async (t) => {
