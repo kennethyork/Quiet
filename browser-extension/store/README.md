@@ -40,6 +40,24 @@ Set these as repository secrets (Settings → Secrets and variables → Actions)
 `test/store.test.cjs` checks that every variable named here is also named in the publishing script,
 so this table cannot drift away from the code.
 
+To store them for CI, one command per secret (it prompts, so nothing lands in your shell history):
+
+```sh
+gh secret set AMO_JWT_ISSUER --repo kennethyork/Quiet
+gh secret set AMO_JWT_SECRET --repo kennethyork/Quiet
+gh secret set CWS_CLIENT_ID --repo kennethyork/Quiet
+gh secret set CWS_CLIENT_SECRET --repo kennethyork/Quiet
+gh secret set CWS_REFRESH_TOKEN --repo kennethyork/Quiet
+gh secret set CWS_PUBLISHER_ID --repo kennethyork/Quiet
+gh secret set CWS_ITEM_ID --repo kennethyork/Quiet
+gh secret set EDGE_CLIENT_ID --repo kennethyork/Quiet
+gh secret set EDGE_API_KEY --repo kennethyork/Quiet
+gh secret set EDGE_PRODUCT_ID --repo kennethyork/Quiet
+```
+
+You do not need all of them to start: Firefox/AMO alone gives you a signed, permanently installable
+package, and the other two keep skipping until their accounts exist.
+
 ## One-time setup
 
 ### Firefox
