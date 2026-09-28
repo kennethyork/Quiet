@@ -31,12 +31,17 @@ function check(name, ok, detail) {
   if (!ok) failures.push(name);
 }
 
-const html = await readFile(path.join(here, 'index.html'), 'utf8');
+/** Every page the site publishes. The store forms link to the privacy one. */
+const PAGES = ['index.html', 'privacy.html'];
+const pages = new Map(
+  await Promise.all(PAGES.map(async (name) => [name, await readFile(path.join(here, name), 'utf8')])),
+);
+const html = pages.get('index.html');
 const styles = await readFile(path.join(here, 'style.css'), 'utf8');
 const scripts = await Promise.all(
   ['app.js', 'downloads.js'].map((file) => readFile(path.join(here, file), 'utf8')),
 );
-const markup = [html, styles, ...scripts].join('\n');
+const markup = [...pages.values(), styles, ...scripts].join('\n');
 
 const appJson = JSON.parse(await readFile(path.join(repoRoot, 'app.json'), 'utf8'));
 const identity = { name: appJson.expo.name, version: appJson.expo.version };
@@ -45,21 +50,28 @@ const identity = { name: appJson.expo.name, version: appJson.expo.version };
 // The page is self-contained and honest about where things come from
 // -----------------------------------------------------------------------------------------------
 
-const localRefs = [...html.matchAll(/(?:href|src)="([^"]+)"/g)]
-  .map((match) => match[1])
-  .filter((ref) => !ref.startsWith('#') && !ref.startsWith('http') && !ref.startsWith('mailto:'));
+const missing = [];
+let referenceCount = 0;
+const insecure = [];
+for (const [name, source] of pages) {
+  const refs = [...source.matchAll(/(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
+  referenceCount += refs.length;
+  for (const ref of refs) {
+    if (ref.startsWith('#')) continue;
+    if (ref.startsWith('http') || ref.startsWith('//')) {
+      if (!ref.startsWith('https://')) insecure.push(`${name}: ${ref}`);
+      continue;
+    }
+    if (ref.startsWith('mailto:')) continue;
+    if (!existsSync(path.join(here, ref.split('#')[0]))) missing.push(`${name}: ${ref}`);
+  }
+}
 
-const missing = localRefs.filter((ref) => !existsSync(path.join(here, ref)));
 check(
   'every local reference exists',
   missing.length === 0,
-  missing.length > 0 ? missing.join(', ') : `${localRefs.length} references`,
+  missing.length > 0 ? missing.join(', ') : `${referenceCount} references across ${PAGES.length} pages`,
 );
-
-const externalRefs = [...html.matchAll(/(?:href|src)="([^"]+)"/g)]
-  .map((match) => match[1])
-  .filter((ref) => ref.startsWith('http') || ref.startsWith('//'));
-const insecure = externalRefs.filter((ref) => !ref.startsWith('https://'));
 check('every external link is HTTPS', insecure.length === 0, insecure.join(', '));
 
 const trackerPatterns = [
@@ -89,6 +101,27 @@ check(
   'the only runtime request is disclosed',
   markup.includes('api.github.com') && /GitHub's API/i.test(html),
   "GitHub's release API, named in the privacy section",
+);
+
+check(
+  'the privacy policy is reachable from the download page',
+  /href="privacy\.html"/.test(html),
+  'linked from the footer',
+);
+
+// The stores are given this URL in their forms, so it has to be the page that ships.
+const privacyUrl = 'https://kennethyork.github.io/Quiet/privacy.html';
+const listingText = await readFile(path.join(repoRoot, 'browser-extension', 'store', 'listing.md'), 'utf8');
+check(
+  'the privacy URL the stores are given resolves to the published page',
+  listingText.includes(privacyUrl) && existsSync(path.join(here, 'privacy.html')),
+  privacyUrl,
+);
+
+check(
+  'the privacy policy covers both products and this site',
+  ['Android app', 'Browser extension', 'website'].every((subject) => pages.get('privacy.html').includes(subject)),
+  'extension, app and site, with the permissions spelled out',
 );
 
 // -----------------------------------------------------------------------------------------------

@@ -55,13 +55,22 @@ function parseArgs(argv) {
   return options;
 }
 
+/**
+ * The manifest's description. Chrome's review checklist requires it to be 132 characters or fewer,
+ * which `test/store.test.cjs` checks, so it lives in one function rather than inline.
+ */
+export function manifestDescription(name) {
+  return `${name} filters adult content in this browser, using the same domain lists as the Android app and no server at all.`;
+}
+
 async function readAppIdentity() {
   const appJson = JSON.parse(await readFile(path.join(repoRoot, 'app.json'), 'utf8'));
   const expo = appJson.expo || {};
+  const name = expo.name || 'Quiet';
   return {
-    name: expo.name || 'Quiet',
+    name,
     version: expo.version || '1.0.0',
-    description: `${expo.name || 'Quiet'} filters adult content in this browser, using the same domain lists as the Android app and no server at all.`,
+    description: manifestDescription(name),
   };
 }
 

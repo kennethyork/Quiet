@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quiet - privacy policy</title>
+    <meta
+      name="description"
+      content="What Quiet does with your data: nothing is collected, there is no account and no server, and the browser extension makes no network requests at runtime."
+    />
+    <meta name="theme-color" content="#070B14" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/icon.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a class="brand" href="index.html">
+          <img src="assets/icon.png" alt="" width="26" height="26" />
+          <span>Quiet</span>
+        </a>
+        <nav aria-label="Sections">
+          <a href="index.html#android">Android</a>
+          <a href="index.html#browsers">Browsers</a>
+          <a href="index.html#limits">Limits</a>
+          <a href="index.html#source">Source</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section>
+        <div class="wrap">
+          <h1>Privacy policy</h1>
+          <p class="lede">
+            This covers the Quiet Android app, the Quiet browser extension, and this website. The short
+            version: nothing about you is collected, there is no account and no server, and the only
+            thing that leaves your device is the network traffic the app or the browser was already
+            making.
+          </p>
+          <p class="tiny muted">
+            Last updated 28 September 2026, for version 1.0.7. The history of this page is the history of
+            the repository, so a change here is visible rather than announced.
+          </p>
+
+          <div class="grid two" style="margin-top: 18px">
+            <article class="card">
+              <div class="card-head"><h3>What is collected</h3></div>
+              <ul class="crosses">
+                <li><strong>Nothing.</strong> There is no analytics, no crash reporting, no account, no telemetry, and no server either product reports to.</li>
+                <li>No identifier, no advertising ID, no fingerprint, no email address.</li>
+                <li>No page content, no browsing history, and no record of which app made a request.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>What leaves your device</h3></div>
+              <ul class="plain">
+                <li><strong>Android app:</strong> the DNS queries your device was making anyway, relayed to the resolver you chose, plus any blocklist download for a list URL you added yourself.</li>
+                <li><strong>Browser extension:</strong> nothing at all. The lists are inside the package, so it makes no network requests at runtime.</li>
+                <li><strong>This website:</strong> one request to GitHub's API for the current release version, and only if your browser runs the script for it. The page works without it.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid two" style="margin-top: 16px">
+            <article class="card">
+              <div class="card-head"><h3>What is stored, and where</h3></div>
+              <ul class="plain">
+                <li><strong>Android app, on your phone:</strong> your settings and list files, a rolling seven-day log of blocked domain names, daily counters, and a salted hash of your PIN. The PIN itself is never stored.</li>
+                <li><strong>Browser extension, in your browser profile:</strong> your settings, your allowlist, daily counters, and a salted PBKDF2 hash of your PIN.</li>
+                <li>Nothing is synced to us or to anyone else. Removing the app or the extension removes all of it, and the app also has a "clear statistics" control.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>Why each permission is asked for</h3></div>
+              <ul class="plain">
+                <li><code>declarativeNetRequest</code> — to block the domains in the lists that ship with the extension. It never reads a request: the rules are static files.</li>
+                <li><code>storage</code> — to keep your settings, allowlist, PIN hash and counters on your device.</li>
+                <li><code>webNavigation</code> — to count the page loads that were stopped and show that on the badge. No page content is read.</li>
+                <li><code>activeTab</code> — to read the current tab's domain when you open the popup, so "Allow this site" refers to the page you are on.</li>
+                <li>Android's VPN permission — to filter DNS for every app, which is the app's only purpose. Only DNS is routed into the tunnel.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid two" style="margin-top: 16px">
+            <article class="card">
+              <div class="card-head"><h3>Remote code and third parties</h3></div>
+              <ul class="plain">
+                <li>Neither product loads or executes remote code. The extension ships its JavaScript, its rulesets and its icons, and nothing else.</li>
+                <li>No data is sold, shared, or transferred to anyone, because none is collected.</li>
+                <li>This site is served by GitHub Pages, which may keep access logs the way any web server does; those are not available to us and we have no analytics that would read them.</li>
+                <li>Downloads are served by GitHub Releases, so fetching one is a request from your browser to GitHub.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>Children, and changes</h3></div>
+              <ul class="plain">
+                <li>The products collect no personal information from anyone, of any age.</li>
+                <li>They are not parental-control software: per-app rules, profiles and remote management are deliberately out of scope.</li>
+                <li>If this policy changes, the change is in this file's history in the public repository and in the release notes.</li>
+                <li>Questions, corrections or a problem with a store listing: open an issue at <a href="https://github.com/kennethyork/Quiet/issues">github.com/kennethyork/Quiet/issues</a>.</li>
+              </ul>
+            </article>
+          </div>
+
+          <p class="tiny muted" style="margin-top: 18px">
+            Quiet is free software under the GPL-3.0. Because the source is public, every claim on this
+            page can be checked against the code that does the work, and the checks in
+            <code>website/check.mjs</code> fail the build if this page or the site stops matching what
+            the repository says.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap footer-inner">
+        <p>
+          Quiet is free software under the GPL-3.0. No cookies, no analytics, no third-party scripts.
+          <a href="index.html">Back to the download page</a>.
+        </p>
+        <p><a href="https://github.com/kennethyork/Quiet">github.com/kennethyork/Quiet</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

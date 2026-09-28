@@ -16,6 +16,9 @@
 - `browser-extension/` — the same lists in front of a browser (Chrome, Edge, Brave, Opera, Vivaldi,
   Firefox, Safari). Plain JavaScript on purpose, no dependencies; `scripts/build.mjs` turns one
   source tree into a package per target, including the `declarativeNetRequest` rulesets.
+- `browser-extension/store/` — the store submission material: listing copy, permission
+  justifications, reviewer notes and the listing images, with `test/store.test.cjs` holding it to the
+  stores' limits and to this repository.
 - `website/` — the landing page for both halves, published to GitHub Pages. Plain HTML, one
   stylesheet, two scripts, no build step, and it links the packages from the latest release rather
   than storing copies of them.
@@ -63,6 +66,14 @@
   claim on the page should come with a check, or with a sentence saying where the number came from.
 - The site never commits binaries. Downloads point at the release attached by CI, so there is one copy
   of each artefact and one place to update it.
+- Store credentials are never committed, never printed and never written to a file. They are read from
+  the environment; `browser-extension/scripts/publish-store.mjs` names every one of them and
+  `store/README.md` says where each comes from. A missing credential stays a skip rather than a
+  failure, so a release can run the publishing step before the store accounts exist.
+- A store listing is a claim about the software, so it is checked like one: the copy against each
+  store's character limits, the images against the exact pixel sizes the stores require, the numbers
+  in those images against the blocklists they came from, and the manifest's own description against
+  the 132-character limit Chrome's review checklist enforces.
 - Keep every way back in working while the icon is hidden: the ongoing notification and
   `quiet://open` (both through `VaultActivity`), Recents, `adb shell am start`, and the
   `*#*#78438#*#*` secret code. Hiding is refused when there is no reachable way back

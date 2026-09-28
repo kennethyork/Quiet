@@ -1,0 +1,262 @@
+/*
+ * Shared styles for the store listing images.
+ *
+ * Each template declares its own exact size in `<html data-size="WxH">`, and
+ * scripts/make-store-assets.mjs renders it at that size, so a store's requirements live in one
+ * attribute rather than in someone's memory. Colours are the app's palette.
+ */
+:root {
+  --bg: #070b14;
+  --card: #0f172a;
+  --card-alt: #111c33;
+  --border: #1e293b;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --faint: #64748b;
+  --accent: #6366f1;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --danger: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(1100px 500px at 8% -12%, rgba(99, 102, 241, 0.22), transparent 68%),
+    radial-gradient(900px 420px at 92% 108%, rgba(244, 63, 94, 0.16), transparent 66%),
+    var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 46px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 18px;
+  max-width: 18ch;
+}
+
+p.lede {
+  color: var(--muted);
+  font-size: 19px;
+  margin: 0 0 26px;
+  max-width: 40ch;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  color: var(--muted);
+  font-size: 17px;
+  padding-left: 28px;
+  position: relative;
+}
+
+li + li {
+  margin-top: 12px;
+}
+
+li::before {
+  color: var(--success);
+  content: '✓';
+  font-weight: 700;
+  left: 0;
+  position: absolute;
+}
+
+li.warn::before {
+  color: var(--warn);
+  content: '!';
+}
+
+strong {
+  color: var(--text);
+}
+
+.layout {
+  align-items: center;
+  display: grid;
+  gap: 56px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  height: 100%;
+}
+
+/* A window, so the screenshots read as real UI rather than floating crops. */
+.window {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(2, 6, 16, 0.65);
+  overflow: hidden;
+}
+
+.window-bar {
+  align-items: center;
+  background: var(--card-alt);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 7px;
+  padding: 11px 14px;
+}
+
+.window-bar i {
+  border-radius: 50%;
+  display: block;
+  height: 10px;
+  width: 10px;
+}
+
+.window-bar i:nth-child(1) {
+  background: #f87171;
+}
+
+.window-bar i:nth-child(2) {
+  background: #fbbf24;
+}
+
+.window-bar i:nth-child(3) {
+  background: #34d399;
+}
+
+.window-bar span {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--faint);
+  font-size: 12px;
+  margin-left: 8px;
+  padding: 3px 12px;
+}
+
+.window img {
+  display: block;
+  width: 100%;
+}
+
+.popup-shot {
+  width: 384px;
+}
+
+.popup-shot img {
+  height: auto;
+}
+
+.wide-shot {
+  width: 640px;
+}
+
+/*
+ * A crop of the settings capture, showing the list picker this screenshot is about. The offsets are
+ * in the capture's own pixels (935 wide, drawn here at 640), so they need revisiting only if the
+ * settings page changes above the lists.
+ */
+.crop {
+  height: 330px;
+  overflow: hidden;
+}
+
+.crop img {
+  display: block;
+  margin-top: -225px;
+  width: 640px;
+}
+
+.tile {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.tile img {
+  border-radius: 22px;
+  height: 96px;
+  width: 96px;
+}
+
+.tile h1 {
+  font-size: 40px;
+  margin: 0;
+  max-width: none;
+}
+
+.tile p {
+  color: var(--muted);
+  font-size: 19px;
+  margin: 0;
+  max-width: 34ch;
+}
+
+.tile.marquee h1 {
+  font-size: 64px;
+}
+
+.tile.marquee img {
+  height: 128px;
+  width: 128px;
+}
+
+.tile.marquee p {
+  font-size: 26px;
+  max-width: 46ch;
+}
+
+.icon {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.icon img {
+  border-radius: 28px;
+  height: 104px;
+  width: 104px;
+}
+
+.facts {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.fact {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+.fact b {
+  display: block;
+  font-size: 26px;
+  font-weight: 650;
+}
+
+.fact span {
+  color: var(--faint);
+  font-size: 13px;
+}

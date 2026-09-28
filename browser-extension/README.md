@@ -89,10 +89,15 @@ browser-extension/
 ## Verifying
 
 ```sh
-npm test          # parser parity with DomainRules.kt, ruleset generation, content-blocker split
+npm test          # parser parity with DomainRules.kt, ruleset generation, store material
 npm run build     # fails if a ruleset is malformed or a manifest points at a missing file
 npm run smoke     # loads the built extension in a real browser and checks the behaviour
 ```
+
+`npm test` also checks the store submission material: the listing copy against the stores' own
+character limits, every listing image against the pixel size its store requires (and for
+transparency), the numbers in those images against the blocklists they came from, and the credential
+names in the runbook against the ones the publishing script reads.
 
 `node scripts/smoke.mjs --screenshots` also writes `dist/screenshots/popup.png` and
 `dist/screenshots/options.png`, captured from the loaded extension, which is the quickest way to see
@@ -108,6 +113,26 @@ shield stops a listed page and that switching it off brings the page back.
 Note that branded Google Chrome 137 and later ignore `--load-extension` outright, so the smoke test
 prefers a Chromium or Chrome-for-Testing build (including the ones Playwright and Puppeteer keep in
 `~/.cache`) and can be pointed anywhere with `QUIET_CHROME=/path/to/chrome`.
+
+## Publishing to the stores
+
+[browser-extension/store/](store/) holds the submission material: the listing copy for every store
+with each store's character limits, the permission justifications and privacy answers, the reviewer
+notes, and the images rendered at exactly the sizes the stores demand.
+
+```sh
+npm run store:assets              # regenerate the listing images from store/assets/*.html
+npm run store:publish -- --dry-run   # print what publishing would do, need no credentials
+```
+
+[store/README.md](store/README.md) is the runbook: which account and which credential each store
+needs, and what has to be done once by hand. Two of the three stores cannot be created by their own
+API - Chrome and Edge need the first listing made in their dashboards - while **Firefox/AMO can be
+fully automated, and signing is what makes the `.xpi` a permanent install** instead of a temporary
+add-on Firefox forgets on restart.
+
+On a tagged release, CI runs the same script: a store with no credentials is skipped with a note, a
+store with them is published, and a signed Firefox package is attached to the release.
 
 ## Keeping it in step with the app
 

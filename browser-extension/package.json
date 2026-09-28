@@ -16,6 +16,8 @@
     "build:with-optional-lists": "node scripts/build.mjs --fetch-optional",
     "test": "node --test test",
     "smoke": "node scripts/smoke.mjs",
+    "store:assets": "node scripts/make-store-assets.mjs",
+    "store:publish": "node scripts/publish-store.mjs",
     "verify": "npm test && npm run build && npm run smoke"
   }
 }

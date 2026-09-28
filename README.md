@@ -163,6 +163,12 @@ There is a landing page for both halves of the product in [website/](website/), 
 <https://kennethyork.github.io/Quiet/>: one page, no build step, and it hands out the APK and the
 browser packages from the latest release.
 
+The submission material for the browser stores lives in
+[browser-extension/store/](browser-extension/store/): the listing copy with each store's limits, the
+permission justifications, the reviewer notes, and images rendered at exactly the sizes the stores
+require. `npm run store:publish` uploads and signs; CI runs it on each tagged release for whichever
+stores have credentials configured, and skips the rest with a note.
+
 What it cannot do is as important as what it can: it only covers that browser, and there is no family
 resolver behind it, so the lists are the only line of defence there. The full list of limits is in
 [browser-extension/README.md](browser-extension/README.md).
