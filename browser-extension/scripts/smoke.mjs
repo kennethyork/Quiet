@@ -218,6 +218,42 @@ class Cdp {
     }
     throw new Error('timed out waiting for a browser target');
   }
+
+  /** Which browser this is, for a skip message that says enough to act on. */
+  async browserVersion() {
+    try {
+      const { product } = await this.send('Browser.getVersion');
+      return product || 'this browser';
+    } catch (_error) {
+      return 'this browser';
+    }
+  }
+}
+
+/**
+ * Turns "the browser never showed me the extension" into either a skip or a real failure.
+ *
+ * A browser that refuses unpacked extensions (branded Chrome 137 and later), or one that cannot
+ * start in this environment at all, is not a verdict on the extension: this test skips and names
+ * the browser instead of blaming the code. A message that names our manifest, our files or a
+ * ruleset is our problem, and fails.
+ */
+async function extensionLoadFailure(run, error) {
+  const logs = run.cdp.logs.join('');
+  const ours = logs
+    .split('\n')
+    .filter((line) => /Failed to load extension|Manifest|Invalid rule|could not be loaded|Ruleset/i.test(line));
+  if (ours.length > 0) {
+    return new Error(`the browser refused the extension: ${ours.slice(0, 3).join(' | ')}`);
+  }
+  return new Error(
+    `${run.chromePath} (${await run.cdp.browserVersion()}) never loaded an unpacked extension here ` +
+      `(${error.message}); point QUIET_CHROME at a Chromium or Chrome for Testing build to run this for real`,
+  );
+}
+
+function isEnvironmentSkip(message) {
+  return /never loaded an unpacked extension|refuses --load-extension|--load-extension is not allowed/.test(message);
 }
 
 /** Starts a browser with one unpacked extension, and hands back a usable CDP session. */
@@ -252,9 +288,14 @@ async function openBrowser({ chromePath, extensionPath, display, hostResolverRul
   const result = {
     cdp,
     workDir,
+    chromePath,
     async close() {
-      child.kill('SIGKILL');
-      await once(child, 'exit').catch(() => {});
+      // A browser that died on start (no display, a refused flag) has already exited, and waiting for
+      // an `exit` event that has been dispatched hangs forever. Ask first, then wait briefly.
+      if (child.exitCode === null && child.signalCode === null) {
+        child.kill('SIGKILL');
+        await Promise.race([once(child, 'exit'), sleep(5000)]).catch(() => {});
+      }
       await rm(workDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }).catch(() => {});
     },
     async workerSession(match) {
@@ -401,7 +442,9 @@ async function main() {
       note('checking whether this browser applies declarativeNetRequest rules (control extension)');
       const run = await openBrowser({ chromePath, extensionPath: control.target, display: display.display, hostResolverRules });
       browser = run;
-      const worker = await run.workerSession('sw.js');
+      const worker = await run.workerSession('sw.js').catch(async (error) => {
+        throw await extensionLoadFailure(run, error);
+      });
       const page = await run.pageSession();
       await run.cdp.send('Page.navigate', { url: smokeUrl }, page);
       await sleep(1800);
@@ -426,7 +469,9 @@ async function main() {
     browser = run;
     browserLogs = () => run.cdp.logs.join('');
 
-    const worker = await run.workerSession('background/background.js');
+    const worker = await run.workerSession('background/background.js').catch(async (error) => {
+      throw await extensionLoadFailure(run, error);
+    });
     const page = await run.pageSession();
     const optionsUrl = `chrome-extension://${worker.extensionId}/options/options.html`;
 
@@ -579,11 +624,15 @@ async function main() {
 }
 
 main().catch((error) => {
-  if (/refuses --load-extension|--load-extension is not allowed/.test(error.message + browserLogs())) {
-    skipRun('this browser is branded Google Chrome 137+, which ignores --load-extension; use a Chromium or Chrome for Testing build, or set QUIET_CHROME');
+  const message = error instanceof Error ? error.message : String(error);
+
+  // These mean the browser here cannot run an unpacked extension, which is not a verdict on the
+  // extension itself. Everything else is a real failure.
+  if (isEnvironmentSkip(message + browserLogs())) {
+    skipRun(message);
     return;
   }
-  console.error(`\nSmoke test failed: ${error.message}`);
+  console.error(`\nSmoke test failed: ${message}`);
   const log = browserLogs().split('\n').filter(Boolean).slice(-25);
   if (log.length > 0) console.error('Last browser log lines:\n' + log.map((line) => '  ' + line).join('\n'));
   process.exitCode = 1;

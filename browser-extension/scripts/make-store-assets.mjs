@@ -107,7 +107,7 @@ async function main() {
     const file = path.join(assetsDir, capture);
     try {
       await readFile(file);
-    } catch (error) {
+    } catch (_error) {
       console.log(`note: store/assets/${capture} is missing; copy it from dist/screenshots/ (see store/README.md)`);
     }
   }

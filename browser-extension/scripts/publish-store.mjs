@@ -82,7 +82,7 @@ async function packageFor(store, identity, { allowMissing = false } = {}) {
   const file = path.join(extensionRoot, 'dist', packageName(identity, target));
   try {
     return { file, bytes: await readFile(file) };
-  } catch (error) {
+  } catch (_error) {
     if (allowMissing) return { file, bytes: null };
     throw new Error(`${path.relative(extensionRoot, file)} is missing; run npm run build first`);
   }
@@ -176,7 +176,7 @@ async function amoFetch(url, options, jwt) {
   let payload = null;
   try {
     payload = text ? JSON.parse(text) : null;
-  } catch (error) {
+  } catch (_error) {
     payload = { raw: text.slice(0, 400) };
   }
   if (!response.ok) {
