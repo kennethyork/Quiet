@@ -36,11 +36,12 @@ jobs:
       - name: Check the site against the repository
         run: node website/check.mjs
 
-      # `enablement: true` turns GitHub Pages on with the "GitHub Actions" source if it is not
-      # already configured, so the first push publishes the site instead of failing on setup.
+      # GitHub Pages has to exist before this runs: creating it needs repository admin, which the
+      # workflow token does not have. It is enabled once, either in Settings -> Pages (Source:
+      # GitHub Actions) or with the API:
+      #
+      #   gh api -X POST repos/kennethyork/Quiet/pages -f build_type=workflow
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:

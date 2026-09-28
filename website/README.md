@@ -9,7 +9,10 @@ on every push to `main`:
 
 **https://kennethyork.github.io/Quiet/**
 
-(A Pages source of *GitHub Actions* has to be selected once under repository Settings → Pages.)
+(Pages has to exist first, because creating it needs repository admin: once, either in Settings →
+Pages → Source: *GitHub Actions*, or with
+`gh api -X POST repos/kennethyork/Quiet/pages -f build_type=workflow`. It is enabled for this
+repository now.)
 
 ## Looking at it
 
